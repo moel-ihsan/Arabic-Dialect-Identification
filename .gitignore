@@ -1,0 +1,6 @@
+__pycache__/
+artifacts/
+cache/
+ignore/
+*.pyc
+.ipynb_checkpoints/
