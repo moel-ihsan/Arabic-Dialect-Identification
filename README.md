@@ -14,20 +14,20 @@ This project explores and rigorously evaluates several data-level and algorithm-
 * **SMOTE** (Standard Synthetic Minority Over-sampling Technique)
 * **ASTRA-SMOTE** (*Adaptive Safe-Threshold Resampling Algorithm* - implemented in files as `knsmote`)
 * **SMOTE-RADIANT** (*Robust Auto-Density Inter-class Anomaly Neutralization Technique* - implemented in files as `dbscansmote`)
-* **ClassWeight** (Cost-sensitive learning via inverse-frequency weights)
+* **Balanced Weighting** (Cost-sensitive learning via inverse-frequency weights)
 
-**Classifiers Used:** LightGBM (Leaf-wise) and XGBoost (Level-wise).
+**Classifiers Used:** LightGBM (leaf-wise) and XGBoost (level-wise).
 
 ## 🏆 Key Findings & Results
 
-Our empirical evaluation in a 5,644-dimensional sparse text space revealed that conventional generative oversampling (SMOTE) and cost-sensitive weighting (ClassWeight) often distort decision boundaries, sacrificing majority-class precision for minority-class recall. 
+Our empirical evaluation in a 5,644-dimensional sparse text space revealed that conventional generative oversampling (SMOTE) and cost-sensitive weighting (Balanced Weighting) often distort decision boundaries, sacrificing majority-class precision for minority-class recall. 
 
 The proposed density-filtered approach, **SMOTE-RADIANT**, paired with a leaf-wise gradient boosting architecture (LightGBM), emerged as the champion configuration:
 
 * **Superior Performance:** Achieved the highest Macro-F1 score (**0.8539**) and overall accuracy (**89.70%**).
-* **Safe Minority Rescue:** Successfully improved the recognition of the severely underrepresented Jordanian dialect without cannibalizing the majority Syrian class.
+* **Safe Minority Rescue:** Successfully improved the recognition of the severely underrepresented Jordanian dialect without substantially degrading the majority Syrian class.
 * **Statistical Significance:** 1,000-iteration bootstrapping confirmed that the improvement over the original baseline is highly significant (*p < 0.001*) with a large effect size (Cohen's *r* = 0.511).
-* **Noise Reduction:** RADIANT autonomously filtered out ~18% of overlapping synthetic anomalies, maintaining structural tension at the inter-class boundaries.
+* **Noise Reduction:** RADIANT autonomously filtered out ~18% of overlapping synthetic anomalies, preserving inter-class boundary structure.
 
 *(For detailed confusion matrices, per-class metrics, and feature importance analysis, please refer to the main paper).*
 
@@ -47,6 +47,63 @@ source .venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 ```
+
+## 🌐 Interactive Streamlit Dashboard
+
+This repository also includes an interactive **Streamlit-based Arabic Dialect Identification dashboard** for real-time inference and qualitative analysis.
+
+The dashboard provides:
+
+* Real-time single-text dialect prediction
+* Batch inference for multiple Arabic texts
+* Probability distribution visualization across Levantine dialects
+* Preprocessing pipeline inspection
+* Debug mode for normalization and tokenization diagnostics
+* Interactive comparison across imbalance mitigation strategies
+* Support for LightGBM and XGBoost experimental configurations
+
+### 🚀 Launch the Dashboard
+
+The interactive dashboard is located in the `app-streamlit/` directory.
+
+```bash
+# Move to Streamlit app directory
+cd app-streamlit
+
+# Launch dashboard
+python -m streamlit run app.py
+```
+
+After launching, open the local URL displayed in the terminal (typically `http://localhost:8501`).
+
+### 🧠 Dashboard Features
+
+* **Interactive Inference**
+  Predict Levantine Arabic dialects from raw Arabic text input.
+
+* **Batch Processing**
+  Perform multi-line batch inference and export predictions as CSV.
+
+* **Pipeline Diagnostics**
+  Inspect cleaning, normalization, tokenization, and character-stream transformations.
+
+* **Experiment Configuration**
+  Dynamically switch between:
+  
+  - Original
+  - SMOTE
+  - ASTRA-SMOTE
+  - SMOTE-RADIANT
+  - Balanced Weighting
+
+* **Robust Invalid Input Handling**
+  Inputs without meaningful Arabic dialectal content are automatically detected and safely rejected as:
+  
+  > *Dialect Not Detected*
+
+### 🖼️ Dashboard Preview
+
+<img src="app-streamlit/dashboard_preview.png" alt="Dashboard Preview" width="60%">
 
 ## 📊 Dataset
 
